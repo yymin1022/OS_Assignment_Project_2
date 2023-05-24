@@ -1,0 +1,4 @@
+# -*- makefile -*-
+
+# Sources for project 2.
+projects/pa_SRC  = projects/pa/pa.c

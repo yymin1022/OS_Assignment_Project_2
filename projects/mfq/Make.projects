@@ -1,0 +1,4 @@
+# -*- makefile -*-
+
+# Sources for project 2.
+projects/mfq_SRC  = projects/mfq/mfq.c
