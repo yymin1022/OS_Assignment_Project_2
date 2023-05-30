@@ -227,6 +227,17 @@ page_from_pool (const struct pool *pool, void *page)
 void
 palloc_get_status (enum palloc_flags flags)
 {
+	struct pool *pool = flags & PAL_USER ? &user_pool : &kernel_pool;
+	size_t size = bitmap_size(pool->used_map);
+
+	printf("Bitmap Size : %d\n\n", size);
+	for(size_t i = 0; i < size; i++)
+	{
+		int bit = bitmap_test(pool->used_map, i);
+		printf("%d",bit);
+		if (i % 32 == 31)
+			printf("\n");
+	}
   //IMPLEMENT THIS
   //PAGE STATUS 0 if FREE, 1 if USED
   //32 PAGE STATUS PER LINE
