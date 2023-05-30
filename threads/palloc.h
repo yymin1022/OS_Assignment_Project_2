@@ -11,6 +11,13 @@ enum palloc_flags
     PAL_USER = 004              /* User page. */
   };
 
+typedef unsigned long elem_type;
+struct bitmap
+{
+	size_t bit_cnt;
+	elem_type *bits;
+};
+
 void palloc_init (size_t user_page_limit);
 void *palloc_get_page (enum palloc_flags);
 void *palloc_get_multiple (enum palloc_flags, size_t page_cnt);
