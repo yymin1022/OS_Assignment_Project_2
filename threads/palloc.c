@@ -242,12 +242,14 @@ palloc_get_status (enum palloc_flags flags)
 	for(size_t i = 0; i < 51; i++)
 		printf(" -");
 	printf("\n");
+
 	for(size_t i = 0; i < size; i++)
 	{
 		if (i % 32 == 0)
 			printf("%3lu | ", i);
 		int bit = bitmap_test(pool->used_map, i);
 		printf("%2d ",bit);
+
 		if (i % 32 == 31)
 			printf("\n");
 	}
