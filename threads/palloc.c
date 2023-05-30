@@ -95,7 +95,7 @@ size_t
 buddy_bitmap_scan_and_flip (struct bitmap *b, size_t start, size_t cnt, bool value)
 {
 	size_t idx = buddy_bitmap_scan (b, start, cnt, value);
-	if (idxx != BITMAP_ERROR)
+	if (idx != BITMAP_ERROR)
 		bitmap_set_multiple (b, idx, cnt, !value);
 	return idx;
 }
