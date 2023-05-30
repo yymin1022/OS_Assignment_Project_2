@@ -61,6 +61,19 @@ palloc_init (size_t user_page_limit)
              user_pages, "user pool");
 }
 
+size_t
+palloc_get_buddy_size(size_t page_cnt)
+{
+	page_cnt = page_cnt - 1;
+
+	while (page_cnt & page_cnt - 1)
+	{
+		page_cnt = page_cnt & page_cnt - 1;
+	}
+
+	return page_cnt << 1;
+}
+
 /* Obtains and returns a group of PAGE_CNT contiguous free pages.
    If PAL_USER is set, the pages are obtained from the user pool,
    otherwise from the kernel pool.  If PAL_ZERO is set in FLAGS,
