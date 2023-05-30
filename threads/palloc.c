@@ -64,6 +64,8 @@ palloc_init (size_t user_page_limit)
 size_t
 palloc_get_buddy_size(size_t page_cnt)
 {
+	if (page_cnt == 1)
+		return 1;
 	page_cnt = page_cnt - 1;
 
 	while (page_cnt & page_cnt - 1)
