@@ -82,7 +82,7 @@ buddy_bitmap_scan (const struct bitmap *b, size_t start, size_t cnt, bool value)
 
 	if (cnt <= b->bit_cnt)
 	{
-		size_t last = b->cnt - cnt;
+		size_t last = b->bit_cnt - cnt;
 		size_t	i;
 		for (i = start; i <= last; i += cnt)
 			if (!bitmap_contains (b, i, cnt, !value))
