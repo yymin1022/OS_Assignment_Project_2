@@ -91,6 +91,15 @@ buddy_bitmap_scan (const struct bitmap *b, size_t start, size_t cnt, bool value)
 	return BITMAP_ERROR;
 }
 
+size_t
+buddy_bitmap_scan_and_flip (struct bitmap *b, size_t start, size_t cnt, bool value)
+{
+	size_t idx = buddy_bitmap_scan (b, start, cnt, value);
+	if (idxx != BITMAP_ERROR)
+		bitmap_set_multiple (b, idx, cnt, !value);
+	return idx;
+}
+
 /* Obtains and returns a group of PAGE_CNT contiguous free pages.
    If PAL_USER is set, the pages are obtained from the user pool,
    otherwise from the kernel pool.  If PAL_ZERO is set in FLAGS,
