@@ -74,6 +74,23 @@ palloc_get_buddy_size(size_t page_cnt)
 	return page_cnt << 1;
 }
 
+size_t
+buddy_bitmap_scan (const struct bitmap *b, size_t start, size_t cnt, bool value)
+{
+	ASSERT (b != NULL);
+	ASSERT (start <= b->bit_cnt);
+
+	if (cnt <= b->bit_cnt)
+	{
+		size_t last = b->cnt - cnt;
+		size_t	i;
+		for (i = start; i <= last; i += cnt)
+			if (!bitmap_contains (b, i, cnt, !value))
+				return i;
+	}
+	return BITMAP_ERROR;
+}
+
 /* Obtains and returns a group of PAGE_CNT contiguous free pages.
    If PAL_USER is set, the pages are obtained from the user pool,
    otherwise from the kernel pool.  If PAL_ZERO is set in FLAGS,
