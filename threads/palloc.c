@@ -62,7 +62,7 @@ palloc_init (size_t user_page_limit)
 }
 
 size_t
-palloc_get_buddy_size(size_t page_cnt)
+buddy_get_size(size_t page_cnt)
 {
 	if (page_cnt == 1)
 		return 1;
@@ -118,7 +118,7 @@ palloc_get_multiple (enum palloc_flags flags, size_t page_cnt)
   if (page_cnt == 0)
     return NULL;
 
-  size_t buddy_page_cnt = palloc_get_buddy_size(page_cnt);
+  size_t buddy_page_cnt = buddy_get_size(page_cnt);
   lock_acquire (&pool->lock);
   page_idx = buddy_bitmap_scan_and_flip (pool->used_map, 0, buddy_page_cnt, false);
   lock_release (&pool->lock);
@@ -166,7 +166,7 @@ palloc_free_multiple (void *pages, size_t page_cnt)
   if (pages == NULL || page_cnt == 0)
     return;
 
-  size_t buddy_page_cnt = palloc_get_buddy_size(page_cnt);
+  size_t buddy_page_cnt = buddy_get_size(page_cnt);
   if (page_from_pool (&kernel_pool, pages))
     pool = &kernel_pool;
   else if (page_from_pool (&user_pool, pages))
@@ -228,18 +228,28 @@ page_from_pool (const struct pool *pool, void *page)
 void
 palloc_get_status (enum palloc_flags flags)
 {
-	struct pool *pool = flags & PAL_USER ? &user_pool : &kernel_pool;
-	size_t size = bitmap_size(pool->used_map);
-
-	printf("Bitmap Size : %d\n\n", size);
-	for(size_t i = 0; i < size; i++)
-	{
-		int bit = bitmap_test(pool->used_map, i);
-		printf("%d",bit);
-		if (i % 32 == 31)
-			printf("\n");
-	}
   //IMPLEMENT THIS
   //PAGE STATUS 0 if FREE, 1 if USED
   //32 PAGE STATUS PER LINE
+	struct pool *pool = flags & PAL_USER ? &user_pool : &kernel_pool;
+	size_t size = bitmap_size(pool->used_map);
+
+	printf("\nBitmap Size : %d\n", size);
+	printf("    | ");
+	for(size_t i = 0; i < 32; i++)
+		printf("%2lu ", i);
+	printf("\n");
+	for(size_t i = 0; i < 51; i++)
+		printf(" -");
+	printf("\n");
+	for(size_t i = 0; i < size; i++)
+	{
+		if (i % 32 == 0)
+			printf("%3lu | ", i);
+		int bit = bitmap_test(pool->used_map, i);
+		printf("%2d ",bit);
+		if (i % 32 == 31)
+			printf("\n");
+	}
+	printf("\n");
 }
