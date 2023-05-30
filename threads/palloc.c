@@ -240,7 +240,7 @@ palloc_get_status (enum palloc_flags flags)
 		printf("%2lu ", i);
 	printf("\n");
 	for(size_t i = 0; i < 51; i++)
-		printf(" -");
+		printf("--");
 	printf("\n");
 
 	for(size_t i = 0; i < size; i++)
