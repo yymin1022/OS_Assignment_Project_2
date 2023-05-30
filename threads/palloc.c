@@ -77,16 +77,24 @@ buddy_get_size(size_t page_cnt)
 }
 
 size_t
-buddy_bitmap_scan (const struct bitmap *b, size_t start, size_t cnt, bool value)
+buddy_get_max_mem(enum palloc_flags flags)
+{
+	struct pool *pool = flags & PAL_USER ? &user_pool : &kernel_pool;
+	size_t size = bitmap_size(pool->used_map);
+	return buddy_get_size(size) / 2;
+}
+
+size_t
+buddy_bitmap_scan (const struct bitmap *b, size_t start, size_t cnt, bool value, enum palloc_flags flags)
 {
 	ASSERT (b != NULL);
-	ASSERT (start <= b->bit_cnt);
+	ASSERT (start <= b->bit_cnt && start < buddy_get_max_mem(flags));
 
-	if (cnt <= b->bit_cnt)
+	if (cnt <= b->bit_cnt && cnt < buddy_get_max_mem(flags))
 	{
 		size_t last = b->bit_cnt - cnt;
 		size_t	i;
-		for (i = start; i <= last; i += cnt)
+		for (i = start; i <= last && i <= buddy_get_max_mem(flags) - cnt; i += cnt)
 			if (!bitmap_contains (b, i, cnt, !value))
 				return i;
 	}
@@ -94,9 +102,9 @@ buddy_bitmap_scan (const struct bitmap *b, size_t start, size_t cnt, bool value)
 }
 
 size_t
-buddy_bitmap_scan_and_flip (struct bitmap *b, size_t start, size_t cnt, bool value)
+buddy_bitmap_scan_and_flip (struct bitmap *b, size_t start, size_t cnt, bool value, enum palloc_flags flags)
 {
-	size_t idx = buddy_bitmap_scan (b, start, cnt, value);
+	size_t idx = buddy_bitmap_scan (b, start, cnt, value, flags);
 	if (idx != BITMAP_ERROR)
 		bitmap_set_multiple (b, idx, cnt, !value);
 	return idx;
@@ -120,7 +128,7 @@ palloc_get_multiple (enum palloc_flags flags, size_t page_cnt)
 
   size_t buddy_page_cnt = buddy_get_size(page_cnt);
   lock_acquire (&pool->lock);
-  page_idx = buddy_bitmap_scan_and_flip (pool->used_map, 0, buddy_page_cnt, false);
+  page_idx = buddy_bitmap_scan_and_flip (pool->used_map, 0, buddy_page_cnt, false, flags);
   lock_release (&pool->lock);
 
   if (page_idx != BITMAP_ERROR)
