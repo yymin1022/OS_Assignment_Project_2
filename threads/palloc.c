@@ -116,8 +116,9 @@ palloc_get_multiple (enum palloc_flags flags, size_t page_cnt)
   if (page_cnt == 0)
     return NULL;
 
+  size_t buddy_page_cnt = palloc_get_buddy_size(page_cnt);
   lock_acquire (&pool->lock);
-  page_idx = bitmap_scan_and_flip (pool->used_map, 0, page_cnt, false);
+  page_idx = buddy_bitmap_scan_and_flip (pool->used_map, 0, buddy_page_cnt, false);
   lock_release (&pool->lock);
 
   if (page_idx != BITMAP_ERROR)
@@ -128,7 +129,7 @@ palloc_get_multiple (enum palloc_flags flags, size_t page_cnt)
   if (pages != NULL) 
     {
       if (flags & PAL_ZERO)
-        memset (pages, 0, PGSIZE * page_cnt);
+        memset (pages, 0, PGSIZE * buddy_page_cnt);
     }
   else 
     {
