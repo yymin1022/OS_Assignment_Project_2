@@ -243,6 +243,7 @@ palloc_get_status (enum palloc_flags flags)
 	size_t size = bitmap_size(pool->used_map);
 
 	printf("\nBitmap Size : %d\n", size);
+	printf("Current Pool is %s Pool\n", flags & PAL_USER ? "User" : "Kernel");
 	printf("    | ");
 	for(size_t i = 0; i < 32; i++)
 		printf("%2lu ", i);
