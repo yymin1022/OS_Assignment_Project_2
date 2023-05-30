@@ -166,6 +166,7 @@ palloc_free_multiple (void *pages, size_t page_cnt)
   if (pages == NULL || page_cnt == 0)
     return;
 
+  size_t buddy_page_cnt = palloc_get_buddy_size(page_cnt);
   if (page_from_pool (&kernel_pool, pages))
     pool = &kernel_pool;
   else if (page_from_pool (&user_pool, pages))
@@ -176,11 +177,11 @@ palloc_free_multiple (void *pages, size_t page_cnt)
   page_idx = pg_no (pages) - pg_no (pool->base);
 
 #ifndef NDEBUG
-  memset (pages, 0xcc, PGSIZE * page_cnt);
+  memset (pages, 0xcc, PGSIZE * buddy_page_cnt);
 #endif
 
-  ASSERT (bitmap_all (pool->used_map, page_idx, page_cnt));
-  bitmap_set_multiple (pool->used_map, page_idx, page_cnt, false);
+  ASSERT (bitmap_all (pool->used_map, page_idx, buddy_page_cnt));
+  bitmap_set_multiple (pool->used_map, page_idx, buddy_page_cnt, false);
 }
 
 /* Frees the page at PAGE. */
