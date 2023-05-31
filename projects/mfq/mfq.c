@@ -28,7 +28,7 @@ void run_mfqtest(char **argv)
 	for (token = strtok_r (argv[1], ":", &save_ptr); token != NULL; 
 		token = strtok_r (NULL, ":", &save_ptr)) {
 
-        char *subtoken, *save_ptr2, name;
+        char *subtoken, *save_ptr2, *name;
         int priority;
 
         subtoken = strtok_r (token, ".", &save_ptr2);
