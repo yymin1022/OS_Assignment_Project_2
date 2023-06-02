@@ -98,6 +98,9 @@ thread_init (void)
 
   lock_init (&tid_lock);
   list_init (&ready_list_fq0);
+  list_init (&ready_list_fq1);
+  list_init (&ready_list_fq2);
+  list_init (&ready_list_fq3);
   list_init (&all_list);
   list_init (&sleep_list);
 
