@@ -101,6 +101,9 @@ struct thread
     /* For timer_sleep() */
     int64_t wakeup_tick;
 
+    /* For Counting Age */
+    size_t age;
+
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
