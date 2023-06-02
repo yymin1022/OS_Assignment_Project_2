@@ -13,6 +13,7 @@
 void test_loop(void *aux)
 {
     /// TODO: make your own test
+    printf("Current Thread is %s from FQ%d\n", thread_name(), thread_current()->priority);
 }
 
 void run_mfqtest(char **argv)
