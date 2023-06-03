@@ -148,6 +148,67 @@ thread_tick (void)
   else
     kernel_ticks++;
 
+  if (!list_empty (&ready_list_fq1) && t->mfq_level < 1)
+  {
+    struct list_elem* it = list_front (&ready_list_fq1);
+    while (it != list_end (&ready_list_fq1))
+    {
+      struct thread* tmp_thread = list_entry (it, struct thread, elem);
+      (tmp_thread->age)++;
+
+      struct list_elem* tmp_it = it;
+      it = list_next(it);
+      if (tmp_thread->age == 20)
+      {
+        list_push_back(&ready_list_fq0, tmp_it);
+	list_pop_front(&ready_list_fq1);
+      }
+
+     it = list_next (it);
+    }
+  }
+
+  if (!list_empty (&ready_list_fq2) && t->mfq_level < 2)
+  {
+    struct list_elem* it = list_front (&ready_list_fq2);
+    while (it != list_end (&ready_list_fq2))
+    {
+      struct thread* tmp_thread = list_entry (it, struct thread, elem);
+      (tmp_thread->age)++;
+
+      struct list_elem* tmp_it = it;
+      it = list_next(it);
+      if (tmp_thread->age == 20)
+      {
+        list_push_back(&ready_list_fq1, tmp_it);
+	list_pop_front(&ready_list_fq2);
+      }
+
+      it = list_next (it);
+    }
+  }
+
+  if (!list_empty (&ready_list_fq3) && t->mfq_level < 3)
+  {
+    struct list_elem* it = list_front (&ready_list_fq3);
+    while (it != list_end (&ready_list_fq3))
+    {
+      struct thread* tmp_thread = list_entry (it, struct thread, elem);
+      (tmp_thread->age)++;
+ 
+      struct list_elem* tmp_it = it;
+      it = list_next(it);
+      if (tmp_thread->age == 20)
+      {
+        list_push_back(&ready_list_fq2, tmp_it);
+	list_pop_front(&ready_list_fq3);
+      }
+
+      it = list_next (it);
+    }
+  }
+
+
   /* Enforce preemption. */
   if (t->mfq_level == 0 && ++thread_ticks >= TIME_SLICE_0)
     intr_yield_on_return ();
