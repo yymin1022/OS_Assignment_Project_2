@@ -249,14 +249,7 @@ thread_unblock (struct thread *t)
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
 
-  if (t->priority == 0)
-  	list_push_back (&ready_list_fq0, &t->elem);
-  else if (t->priority == 1)
-  	list_push_back (&ready_list_fq1, &t->elem);
-  else if (t->priority == 2)
-  	list_push_back (&ready_list_fq2, &t->elem);
-  else
-  	list_push_back (&ready_list_fq3, &t->elem);
+  list_push_back (&ready_list_fq0, &t->elem);
 
   t->status = THREAD_READY;
   intr_set_level (old_level);
