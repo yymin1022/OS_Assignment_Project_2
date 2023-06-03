@@ -156,17 +156,14 @@ thread_tick (void)
       struct thread* tmp_thread = list_entry (it, struct thread, elem);
       (tmp_thread->age)++;
 
-      struct list_elem* tmp_it = it;
       it = list_next(it);
       if (tmp_thread->age == 20)
       {
 	tmp_thread->age = 0;
 	tmp_thread->mfq_level = 0;
-        list_push_back(&ready_list_fq0, tmp_it);
+        list_push_back(&ready_list_fq0, &tmp_thread->elem);
 	list_pop_front(&ready_list_fq1);
       }
-
-     it = list_next (it);
     }
   }
 
@@ -178,17 +175,14 @@ thread_tick (void)
       struct thread* tmp_thread = list_entry (it, struct thread, elem);
       (tmp_thread->age)++;
 
-      struct list_elem* tmp_it = it;
       it = list_next(it);
       if (tmp_thread->age == 20)
       {
 	tmp_thread->age = 0;
 	tmp_thread->mfq_level = 1;
-        list_push_back(&ready_list_fq1, tmp_it);
+        list_push_back(&ready_list_fq1, &tmp_thread->elem);
 	list_pop_front(&ready_list_fq2);
       }
-
-      it = list_next (it);
     }
   }
 
@@ -200,17 +194,14 @@ thread_tick (void)
       struct thread* tmp_thread = list_entry (it, struct thread, elem);
       (tmp_thread->age)++;
  
-      struct list_elem* tmp_it = it;
       it = list_next(it);
       if (tmp_thread->age == 20)
       {
 	tmp_thread->age = 0;
 	tmp_thread->mfq_level = 2;
-        list_push_back(&ready_list_fq2, tmp_it);
+        list_push_back(&ready_list_fq2, &tmp_thread->elem);
 	list_pop_front(&ready_list_fq3);
       }
-
-      it = list_next (it);
     }
   }
 
@@ -231,7 +222,7 @@ thread_tick (void)
     t->mfq_level = 3;
     intr_yield_on_return ();
   }
-  else
+  else if (++thread_ticks >= TIME_SLICE_3)
   {
     intr_yield_on_return ();
   }
@@ -253,8 +244,7 @@ thread_print_stats (void)
    If thread_start() has been called, then the new thread may be
    scheduled before thread_create() returns.  It could even exit
    before thread_create() returns.  Contrariwise, the original
-   thread may run for any amount of time before the new thread is
-   scheduled.  Use a semaphore or some other form of
+   thread may run for any amount of time before the new thread CCC   scheduled.  Use a semaphore or some other form of
    synchronization if you need to ensure ordering.
 
    The code provided sets the new thread's `priority' member to
@@ -314,6 +304,10 @@ thread_block (void)
   ASSERT (!intr_context ());
   ASSERT (intr_get_level () == INTR_OFF);
 
+  if (running_thread ()->mfq_level > 0)
+	  (running_thread ()->mfq_level)--;
+  
+  running_thread ()->age = 0;
   thread_current ()->status = THREAD_BLOCKED;
   schedule ();
 }
@@ -336,14 +330,14 @@ thread_unblock (struct thread *t)
   old_level = intr_disable ();
   ASSERT (t->status == THREAD_BLOCKED);
 
-  if(t->mfq_level == 0)
-    list_push_back (&ready_list_fq0, &t->elem);
-  else if(t->mfq_level == 1)
+  if(t->mfq_level == 1)
     list_push_back (&ready_list_fq1, &t->elem);
   else if(t->mfq_level == 2)
     list_push_back (&ready_list_fq2, &t->elem);
-  else
+  else if(t->mfq_level == 3)
     list_push_back (&ready_list_fq3, &t->elem);
+  else
+    list_push_back (&ready_list_fq0, &t->elem);
 
   t->status = THREAD_READY;
   intr_set_level (old_level);
