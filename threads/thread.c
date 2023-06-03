@@ -149,13 +149,13 @@ thread_tick (void)
     kernel_ticks++;
 
   /* Enforce preemption. */
-  if (!list_empty (&ready_list_fq0) && ++thread_ticks >= TIME_SLICE_0)
+  if (t->mfq_level == 0 && ++thread_ticks >= TIME_SLICE_0)
     intr_yield_on_return ();
-  else if (!list_empty (&ready_list_fq1) && ++thread_ticks >= TIME_SLICE_1)
+  else if (t->mfq_level == 1 && ++thread_ticks >= TIME_SLICE_1)
     intr_yield_on_return ();
-  else if (!list_empty (&ready_list_fq2) && ++thread_ticks >= TIME_SLICE_2)
+  else if (t->mfq_level == 2 && ++thread_ticks >= TIME_SLICE_2)
     intr_yield_on_return ();
-  else if (++thread_ticks >= TIME_SLICE_3)
+  else
     intr_yield_on_return ();
 }
 
