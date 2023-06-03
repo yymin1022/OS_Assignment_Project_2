@@ -58,7 +58,10 @@ static long long kernel_ticks;  /* # of timer ticks in kernel threads. */
 static long long user_ticks;    /* # of timer ticks in user programs. */
 
 /* Scheduling. */
-#define TIME_SLICE 4            /* # of timer ticks to give each thread. */
+#define TIME_SLICE_0 4            /* # of timer ticks to give each thread from FQ0. */
+#define TIME_SLICE_1 5            /* # of timer ticks to give each thread from FQ1. */
+#define TIME_SLICE_2 6            /* # of timer ticks to give each thread from FQ2. */
+#define TIME_SLICE_3 7            /* # of timer ticks to give each thread from FQ3. */
 static unsigned thread_ticks;   /* # of timer ticks since last yield. */
 
 /* If false (default), use round-robin scheduler.
@@ -146,7 +149,7 @@ thread_tick (void)
     kernel_ticks++;
 
   /* Enforce preemption. */
-  if (++thread_ticks >= TIME_SLICE)
+  if (++thread_ticks >= TIME_SLICE_0)
     intr_yield_on_return ();
 }
 
