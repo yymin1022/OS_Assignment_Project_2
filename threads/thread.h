@@ -104,6 +104,9 @@ struct thread
     /* For Counting Age */
     size_t age;
 
+    /* For Checking Current MFQ Level */
+    size_t mfq_level;
+
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
