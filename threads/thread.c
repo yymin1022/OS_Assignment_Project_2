@@ -160,6 +160,7 @@ thread_tick (void)
       it = list_next(it);
       if (tmp_thread->age == 20)
       {
+	tmp_thread->age = 0;
         list_push_back(&ready_list_fq0, tmp_it);
 	list_pop_front(&ready_list_fq1);
       }
@@ -180,6 +181,7 @@ thread_tick (void)
       it = list_next(it);
       if (tmp_thread->age == 20)
       {
+	tmp_thread->age = 0;
         list_push_back(&ready_list_fq1, tmp_it);
 	list_pop_front(&ready_list_fq2);
       }
@@ -200,6 +202,7 @@ thread_tick (void)
       it = list_next(it);
       if (tmp_thread->age == 20)
       {
+	tmp_thread->age = 0;
         list_push_back(&ready_list_fq2, tmp_it);
 	list_pop_front(&ready_list_fq3);
       }
