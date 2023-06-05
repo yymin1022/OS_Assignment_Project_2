@@ -307,8 +307,8 @@ thread_block (void)
 
   if (running_thread ()->mfq_level > 0)
 	  (running_thread ()->mfq_level)--;
-  
   running_thread ()->age = 0;
+
   thread_current ()->status = THREAD_BLOCKED;
   schedule ();
 }
