@@ -207,22 +207,23 @@ thread_tick (void)
 
 
   /* Enforce preemption. */
-  if (t->mfq_level == 0 && ++thread_ticks >= TIME_SLICE_0)
+  thread_ticks++;
+  if (t->mfq_level == 0 && thread_ticks >= TIME_SLICE_0)
   {
     t->mfq_level = 1;
     intr_yield_on_return ();
   }
-  else if (t->mfq_level == 1 && ++thread_ticks >= TIME_SLICE_1)
+  else if (t->mfq_level == 1 && thread_ticks >= TIME_SLICE_1)
   {
     t->mfq_level = 2;
     intr_yield_on_return ();
   }
-  else if (t->mfq_level == 2 && ++thread_ticks >= TIME_SLICE_2)
+  else if (t->mfq_level == 2 && thread_ticks >= TIME_SLICE_2)
   {
     t->mfq_level = 3;
     intr_yield_on_return ();
   }
-  else if (t->mfq_level == 3 && ++thread_ticks >= TIME_SLICE_3)
+  else if (t->mfq_level == 3 && thread_ticks >= TIME_SLICE_3)
   {
     intr_yield_on_return ();
   }
