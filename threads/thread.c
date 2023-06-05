@@ -157,7 +157,7 @@ thread_tick (void)
       (tmp_thread->age)++;
 
       it = list_next(it);
-      if (tmp_thread->age == 20)
+      if (tmp_thread->age >= 20)
       {
 	tmp_thread->age = 0;
 	tmp_thread->mfq_level = 0;
@@ -176,7 +176,7 @@ thread_tick (void)
       (tmp_thread->age)++;
 
       it = list_next(it);
-      if (tmp_thread->age == 20)
+      if (tmp_thread->age >= 20)
       {
 	tmp_thread->age = 0;
 	tmp_thread->mfq_level = 1;
@@ -195,7 +195,7 @@ thread_tick (void)
       (tmp_thread->age)++;
  
       it = list_next(it);
-      if (tmp_thread->age == 20)
+      if (tmp_thread->age >= 20)
       {
 	tmp_thread->age = 0;
 	tmp_thread->mfq_level = 2;
@@ -222,7 +222,7 @@ thread_tick (void)
     t->mfq_level = 3;
     intr_yield_on_return ();
   }
-  else if (++thread_ticks >= TIME_SLICE_3)
+  else if (t->mfq_level == 3 && ++thread_ticks >= TIME_SLICE_3)
   {
     intr_yield_on_return ();
   }
