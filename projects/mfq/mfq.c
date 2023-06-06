@@ -16,7 +16,7 @@ void test_loop(void *aux)
     for(int i = 0; i < 100000000; i++){
 		if((i + 1) % 7000000 == 0)
 		{
-			printf("%s (Age %d, Level %lu) Loop %d\n", thread_name(), thread_current()->age, thread_current()->mfq_level, i + 1);
+			printf("Thread %s (Loop %d)\n", thread_name(), i + 1);
 		}
     }
     printf("===== %s is Finished =====\n", thread_name());
