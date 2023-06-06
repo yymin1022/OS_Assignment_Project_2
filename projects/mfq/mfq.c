@@ -14,7 +14,7 @@ void test_loop(void *aux)
 {
     /// TODO: make your own test
     for(int i = 0; i < 100000000; i++){
-		if((i + 1) % 10000000 == 0)
+		if((i + 1) % 7000000 == 0)
 		{
 			printf("%s (Age %d, Level %lu) Loop %d\n", thread_name(), thread_current()->age, thread_current()->mfq_level, i + 1);
 		}
