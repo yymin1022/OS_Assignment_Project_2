@@ -467,23 +467,7 @@ thread_yield (void)
 
   old_level = intr_disable ();
   if (cur != idle_thread) 
-  {
-    if (cur->status == THREAD_BLOCKED)
-    {
-      if (cur->mfq_level == 0)
-        list_push_back (&ready_list_fq0, &cur->elem);
-      else if (cur->mfq_level == 1)
-        list_push_back (&ready_list_fq1, &cur->elem);
-      else if (cur->mfq_level == 2)
-        list_push_back (&ready_list_fq2, &cur->elem);
-      else if (cur->mfq_level == 3)
-        list_push_back (&ready_list_fq3, &cur->elem);
-    }
-    else
-    {
-      list_push_back (&ready_list_fq0, &cur->elem);
-    }
-  }
+    list_push_back (&ready_list_fq0, &cur->elem);
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
